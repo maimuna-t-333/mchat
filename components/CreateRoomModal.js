@@ -56,7 +56,7 @@ export default function CreateRoomModal({ userId, onRoomCreated, onClose }) {
               Room Name *
             </label>
             <Input
-              placeholder="e.g. general, random, tech-talk"
+              placeholder="Enter room name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="bg-gray-700 border-gray-600 text-white"
@@ -65,10 +65,10 @@ export default function CreateRoomModal({ userId, onRoomCreated, onClose }) {
 
           <div>
             <label className="text-gray-400 text-sm mb-1 block">
-              Description (optional)
+              Description 
             </label>
             <Input
-              placeholder="What is this room about?"
+              placeholder="Details of the room"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="bg-gray-700 border-gray-600 text-white"

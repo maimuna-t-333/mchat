@@ -2,8 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import RoomCard from '@/components/RoomCard'
+import Sidebar from '@/components/Sidebar'
 import CreateRoomModal from '@/components/CreateRoomModal'
 
 export default function ChatPage() {
@@ -12,37 +11,29 @@ export default function ChatPage() {
   const [rooms, setRooms] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     const initialize = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-
       if (!session) {
         router.push('/login')
         return
       }
-
       setUser(session.user)
-
       await fetchRooms()
       setLoading(false)
     }
-
     initialize()
   }, [router])
 
   const fetchRooms = async () => {
     const { data, error } = await supabase
       .from('rooms')
-      .select('*')              
-      .order('created_at', { ascending: false }) 
+      .select('*')
+      .order('created_at', { ascending: false })
 
-    if (error) {
-      console.error('Error fetching rooms:', error)
-      return
-    }
-
-    setRooms(data)
+    if (!error) setRooms(data)
   }
 
   const handleRoomCreated = (newRoom) => {
@@ -56,71 +47,60 @@ export default function ChatPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-900">
-        <p className="text-white">Loading...</p>
+      <div className="flex min-h-screen items-center justify-center"
+        style={{ backgroundColor: 'var(--chat-bg)' }}>
+        <div className="text-center">
+          <p className="text-4xl mb-3">💬</p>
+          <p className="text-white">Loading mchat...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="flex items-center justify-between px-6 py-4 bg-gray-800 border-b border-gray-700">
-        <h1 className="text-white font-bold text-xl">MChat</h1>
-        <div className="flex items-center gap-4">
-          <span className="text-gray-400 text-sm hidden sm:block">
-            {user?.email}
-          </span>
-          <Button
-            onClick={() => setShowModal(true)}
-            size="sm"
-          >
-            + New Room
-          </Button>
+    <div className="flex h-screen overflow-hidden"
+      style={{ backgroundColor: 'var(--chat-bg)' }}>
+
+      <Sidebar
+        rooms={rooms}
+        currentRoomId={null}
+        user={user}
+        onCreateRoom={() => setShowModal(true)}
+        onLogout={handleLogout}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="text-center space-y-4">
+          <p className="text-8xl">💬</p>
+          <h2 className="text-white text-2xl font-light">
+            Welcome to mchat
+          </h2>
+          <p className="text-gray-400 text-sm max-w-xs">
+            Select a room from the sidebar to start chatting,
+            or create a new room.
+          </p>
           <button
-            onClick={handleLogout}
-            className="text-red-400 hover:text-red-300 text-sm"
+            onClick={() => setShowModal(true)}
+            className="px-6 py-2 rounded-full text-white text-sm transition"
+            style={{ backgroundColor: 'var(--whatsapp-green)' }}
           >
-            Logout
+            + Create a Room
           </button>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-white text-2xl font-semibold">
-            Chat Rooms
-          </h2>
-          <span className="text-gray-400 text-sm">
-            {rooms.length} room{rooms.length !== 1 ? 's' : ''}
-          </span>
-        </div>
-
-        {/* Rooms list */}
-        {rooms.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-gray-400 text-lg">No rooms yet</p>
-            <p className="text-gray-500 text-sm mt-2">
-              Create the first room to get started!
-            </p>
-            <Button
-              className="mt-4"
-              onClick={() => setShowModal(true)}
-            >
-              Create a Room
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {rooms.map((room) => (
-              <RoomCard key={room.id} room={room} />
-            ))}
-          </div>
-        )}
-      </div>
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="md:hidden fixed top-4 left-4 z-10 text-white bg-gray-700 p-2 rounded-full"
+      >
+        ☰
+      </button>
 
       {showModal && (
         <CreateRoomModal
-          userId={user.id}
+          userId={user?.id}
           onRoomCreated={handleRoomCreated}
           onClose={() => setShowModal(false)}
         />

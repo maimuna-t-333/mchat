@@ -11,36 +11,55 @@ export default function MessageBubble({ message, isOwn }) {
     return email.substring(0, 2).toUpperCase()
   }
 
+  const getSenderName = (email) => {
+    if (!email) return 'Unknown'
+    return email.split('@')[0]
+  }
+
   return (
-    <div className={`flex items-end gap-2 mb-3 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}>
+    <div className={`flex items-end gap-2 mb-2 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}>
 
-      <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0">
-        <span className="text-white text-xs font-bold">
+      {!isOwn && (
+        <div
+          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold"
+          style={{ backgroundColor: 'var(--whatsapp-dark-green)' }}
+        >
           {getInitials(message.user_email)}
-        </span>
-      </div>
+        </div>
+      )}
 
-      <div className={`max-w-[70%] ${isOwn ? 'items-end' : 'items-start'} flex flex-col`}>
+      <div className={`max-w-[65%] flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
 
         {!isOwn && (
-          <span className="text-gray-400 text-xs mb-1 ml-1">
-            {message.user_email?.split('@')[0]}
+          <span className="text-xs mb-1 ml-2" style={{ color: 'var(--whatsapp-green)' }}>
+            {getSenderName(message.user_email)}
           </span>
         )}
 
-        <div className={`px-4 py-2 rounded-2xl ${
-          isOwn
-            ? 'bg-green-600 text-white rounded-br-sm'    
-            : 'bg-gray-700 text-white rounded-bl-sm'     
-        }`}>
-          <p className="text-sm leading-relaxed">
+        <div
+          className="px-3 py-2 rounded-lg relative"
+          style={{
+            backgroundColor: isOwn ? 'var(--own-message)' : 'var(--message-bg)',
+            borderRadius: isOwn
+              ? '12px 12px 2px 12px'
+              : '12px 12px 12px 2px'
+          }}
+        >
+          <p className="text-white text-sm leading-relaxed break-words">
             {message.content}
           </p>
-        </div>
 
-        <span className="text-gray-500 text-xs mt-1 mx-1">
-          {formatTime(message.created_at)}
-        </span>
+          <div className={`flex items-center gap-1 mt-1 ${isOwn ? 'justify-end' : 'justify-start'}`}>
+            <span className="text-xs" style={{ color: '#8696a0' }}>
+              {formatTime(message.created_at)}
+            </span>
+            {isOwn && (
+              <span style={{ color: 'var(--whatsapp-green)', fontSize: '12px' }}>
+                ✓✓
+              </span>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

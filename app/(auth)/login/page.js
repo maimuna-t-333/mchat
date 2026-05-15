@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { motion } from 'framer-motion'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -34,7 +35,11 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-900">
-      <div className="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-lg">
+      <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-lg">
         <h2 className="text-2xl text-center font-bold text-white mb-6">
           Sign in to Your Account
         </h2>
@@ -74,7 +79,10 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className='flex justify-center'>
+          <motion.div
+           whileHover={{ scale: 1.05 }} 
+            whileTap={{ scale: 0.95 }}
+          className='flex justify-center'>
             <Button
             type="submit"
             className=" px-6 py-2 rounded-full text-white font-semibold shadow-lg hover:cursor-pointer hover:border-2 border-white"
@@ -83,7 +91,7 @@ export default function LoginPage() {
           >
             {loading ? 'Logging in...' : 'Login'}
           </Button>
-          </div>
+          </motion.div>
 
           
         </form>
@@ -94,7 +102,7 @@ export default function LoginPage() {
             Register
           </Link>
         </p>
-      </div>
+      </motion.div>
     </main>
   )
 }

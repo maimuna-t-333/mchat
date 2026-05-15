@@ -1,5 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 
 export default function Sidebar({
@@ -12,10 +14,64 @@ export default function Sidebar({
   onClose
 }) {
   const router = useRouter()
-  const getInitials = (email) => {
-    if (!email) return '?'
-    return email.substring(0, 2).toUpperCase()
+  const [dms, setDms] = useState([])
+  const [username, setUsername] = useState('')
+
+  const getInitials = (str) => {
+    if (!str) return '?'
+    return str.substring(0, 2).toUpperCase()
   }
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return
+      const { data } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', user.id)
+        .single()
+      if (data?.username) setUsername(data.username)
+    }
+    fetchProfile()
+  }, [user])
+
+  useEffect(() => {
+    const fetchDMs = async () => {
+      if (!user?.id) return
+      const { data } = await supabase
+        .from('direct_messages')
+        .select('*')
+        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+        .order('created_at', { ascending: false })
+
+      if (!data) return
+
+      const seen = new Set()
+      const conversations = []
+      for (const msg of data) {
+        const partnerId = msg.sender_id === user.id
+          ? msg.receiver_id
+          : msg.sender_id
+        if (!seen.has(partnerId)) {
+          seen.add(partnerId)
+          conversations.push({ partnerId, lastMessage: msg.content })
+        }
+      }
+
+      const enriched = await Promise.all(
+        conversations.map(async (c) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('username, email')
+            .eq('id', c.partnerId)
+            .single()
+          return { ...c, profile }
+        })
+      )
+      setDms(enriched)
+    }
+    fetchDMs()
+  }, [user])
 
   return (
     <>
@@ -39,16 +95,20 @@ export default function Sidebar({
           style={{ backgroundColor: 'var(--message-bg)' }}
         >
           <div className="flex items-center gap-3">
-            {/* User avatar */}
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
-              style={{ backgroundColor: 'var(--whatsapp-teal)' }}>
-              {getInitials(user?.email)}
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+              style={{ backgroundColor: 'var(--whatsapp-teal)' }}
+            >
+              {getInitials(username || user?.email)}
             </div>
             <div>
-              <p className="text-white text-sm font-medium">
-                {user?.email?.split('@')[0]}
+              <p className="text-white text-sm font-semibold">
+                {username || user?.email?.split('@')[0]}
               </p>
-              <div className="flex items-center gap-1">
+              <p className="text-gray-400 text-xs">
+                {user?.email}
+              </p>
+              <div className="flex items-center gap-1 mt-0.5">
                 <div className="w-2 h-2 rounded-full bg-green-400" />
                 <span className="text-green-400 text-xs">Online</span>
               </div>
@@ -61,20 +121,24 @@ export default function Sidebar({
             Logout
           </button>
         </div>
-
-        <div className="px-3 py-2" style={{ backgroundColor: 'var(--sidebar-bg)' }}>
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg"
-            style={{ backgroundColor: 'var(--input-bg)' }}>
+        <div className="px-3 py-2">
+          <div
+            className="flex items-center gap-2 px-3 py-2 rounded-lg"
+            style={{ backgroundColor: 'var(--input-bg)' }}
+          >
             <span className="text-gray-400 text-sm">🔍</span>
             <span className="text-gray-400 text-sm">Search or start new chat</span>
           </div>
         </div>
-
         <div className="flex-1 overflow-y-auto">
+          <div className="px-4 py-2">
+            <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
+              Rooms
+            </p>
+          </div>
+
           {rooms.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-400 text-sm">No rooms yet</p>
-            </div>
+            <p className="text-gray-500 text-xs text-center py-2">No rooms yet</p>
           ) : (
             rooms.map((room) => (
               <div
@@ -86,24 +150,21 @@ export default function Sidebar({
                 className={`
                   flex items-center gap-3 px-4 py-3 cursor-pointer
                   border-b border-gray-800 transition
-                  ${currentRoomId === room.id
-                    ? 'bg-gray-700'
-                    : 'hover:bg-gray-800'
-                  }
+                  ${currentRoomId === room.id ? 'bg-gray-700' : 'hover:bg-gray-800'}
                 `}
               >
                 <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
                   style={{ backgroundColor: 'var(--whatsapp-dark-green)' }}
                 >
-                  {room.name.substring(0, 2).toUpperCase()}
+                  {getInitials(room.name)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <p className="text-white font-medium text-sm truncate">
                       # {room.name}
                     </p>
-                    <span className="text-gray-400 text-xs flex-shrink-0 ml-2">
+                    <span className="text-gray-500 text-xs flex-shrink-0 ml-2">
                       {new Date(room.created_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -114,16 +175,60 @@ export default function Sidebar({
               </div>
             ))
           )}
+
+          {dms.length > 0 && (
+            <>
+              <div className="px-4 py-2 mt-2">
+                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
+                  Direct Messages
+                </p>
+              </div>
+              {dms.map((dm, i) => (
+                <div
+                  key={i}
+                  onClick={() => {
+                    router.push(`/dm/${encodeURIComponent(dm.profile?.email || dm.partnerId)}`)
+                    onClose?.()
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 cursor-pointer border-b border-gray-800 hover:bg-gray-800 transition"
+                >
+                  <div
+                    className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                    style={{ backgroundColor: '#168aad' }}
+                  >
+                    {getInitials(dm.profile?.username || dm.profile?.email)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-medium text-sm truncate">
+                      {dm.profile?.username || dm.profile?.email?.split('@')[0] || 'Unknown'}
+                    </p>
+                    <p className="text-gray-400 text-xs truncate mt-0.5">
+                      {dm.lastMessage}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
         </div>
 
-        <div className="p-4 border-t border-gray-700"
-          style={{ backgroundColor: 'var(--message-bg)' }}>
+        <div
+          className="p-3 border-t border-gray-700 flex flex-col gap-2"
+          style={{ backgroundColor: 'var(--message-bg)' }}
+        >
           <Button
             onClick={onCreateRoom}
             className="w-full text-white font-medium"
             style={{ backgroundColor: 'var(--whatsapp-green)' }}
           >
             + New Room
+          </Button>
+          <Button
+            onClick={() => router.push('/new-dm')}
+            className="w-full text-white font-medium"
+            style={{ backgroundColor: '#168aad' }}
+          >
+            ✉ New Message
           </Button>
         </div>
       </div>

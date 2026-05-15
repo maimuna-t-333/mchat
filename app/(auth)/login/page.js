@@ -39,7 +39,7 @@ export default function LoginPage() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-lg">
+      className="w-full max-w-md mx-4 p-8 bg-gray-800 rounded-xl shadow-lg">
         <h2 className="text-2xl text-center font-bold text-white mb-6">
           Sign in to Your Account
         </h2>

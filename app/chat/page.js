@@ -88,6 +88,13 @@ export default function ChatPage() {
           >
             + Create a Room
           </button>
+          <button
+          onClick={() => router.push('/new-dm')}
+          className="px-6 py-2 rounded-full text-white text-sm transition"
+          style={{ backgroundColor: '#168aad' }}
+            >
+              ✉ New Message
+            </button>
         </div>
       </div>
 

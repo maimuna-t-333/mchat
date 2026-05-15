@@ -36,6 +36,7 @@ export default function RegisterPage() {
       .insert({
         id: data.user.id,
         username,
+        email,
       })
 
     if (profileError) {

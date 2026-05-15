@@ -43,7 +43,8 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight"
+          className="text-6xl md:text-8xl font-bold text-white mb-2 tracking-tight"
+          style={{ fontFamily: 'var(--font-amrante)' }}
         >
           M<span style={{ color: '#168aad' }}>Chat</span>
         </motion.h1>
@@ -52,7 +53,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-gray-400 text-xl md:text-2xl mb-4 font-light"
+          className="text-gray-400 text-xl md:text-2xl mb-2 font-light"
         >
           Chat instantly with anyone, anywhere.
         </motion.p>
@@ -61,7 +62,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-gray-500 text-base mb-10 max-w-md mx-auto"
+          className="text-gray-500 text-base mb-6 max-w-md mx-auto"
         >
           Create rooms, invite friends and start chatting
           in real-time — No downloads required.
@@ -103,7 +104,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="flex flex-wrap justify-center gap-6 mt-16"
+          className="flex flex-wrap justify-center gap-6 mt-10"
         >
           {[
             {  text: 'Real-time messaging' },

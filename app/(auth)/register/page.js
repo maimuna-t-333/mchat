@@ -50,7 +50,7 @@ export default function RegisterPage() {
     <main className="flex min-h-screen items-center justify-center bg-gray-900">
       <div className="w-full max-w-md mx-4 p-6 lg:p-8 bg-gray-800 rounded-xl shadow-lg">
         <h2 className="text-2xl text-center font-bold text-white mb-6">
-          Create Account
+          Create Your Account
         </h2>
 
         {error && (

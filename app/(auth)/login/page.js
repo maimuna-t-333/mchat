@@ -35,8 +35,8 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-900">
       <div className="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold text-white mb-6">
-          Welcome Back
+        <h2 className="text-2xl text-center font-bold text-white mb-6">
+          Sign in to Your Account
         </h2>
 
         {error && (
@@ -74,18 +74,23 @@ export default function LoginPage() {
             />
           </div>
 
-          <Button
+          <div className='flex justify-center'>
+            <Button
             type="submit"
-            className="w-full"
+            className=" px-6 py-2 rounded-full text-white font-semibold shadow-lg hover:cursor-pointer hover:border-2 border-white"
+              style={{ backgroundColor: '#168aad' }}
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}
           </Button>
+          </div>
+
+          
         </form>
 
         <p className="text-gray-400 text-sm text-center mt-4">
           Don't have an account?{' '}
-          <Link href="/register" className="text-blue-400 hover:underline">
+          <Link href="/register" className="text-blue-400 hover:text-white">
             Register
           </Link>
         </p>

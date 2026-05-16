@@ -4,7 +4,6 @@ import { supabase } from '@/lib/supabase'
 
 export default function OnlineStatus({ roomId, userId }) {
   const [onlineUsers, setOnlineUsers] = useState([])
-
   useEffect(() => {
     if (!roomId || !userId) return
 

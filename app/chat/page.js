@@ -119,16 +119,16 @@ export default function ChatPage() {
       <button
         onClick={() => setShowModal(true)}
         className="w-full px-6 py-3 rounded-xl text-white text-sm font-semibold transition hover:opacity-90"
-        style={{ backgroundColor: 'var(--whatsapp-green)' }}
+        style={{ backgroundColor: '#184e77 ' }}
       >
-        + Create a Room
+         Create a Room
       </button>
       <button
         onClick={() => router.push('/new-dm')}
         className="w-full px-6 py-3 rounded-xl text-white text-sm font-semibold transition hover:opacity-90"
         style={{ backgroundColor: '#168aad' }}
       >
-        ✉ Send a Direct Message
+         Send a Direct Message
       </button>
     </div>
 

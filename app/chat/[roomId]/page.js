@@ -215,7 +215,8 @@ channel = supabase
           <div ref={bottomRef} />
         </div>
 
-        <div className="flex-shrink-0">
+        <div className="
+        shrink-0">
           <MessageInput
             onSend={handleSend}
             disabled={!user}

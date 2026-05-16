@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import { CiSearch } from "react-icons/ci";
+import { MdLogout } from "react-icons/md";
 
 export default function Sidebar({
   rooms,
@@ -129,16 +131,16 @@ export default function Sidebar({
             onClick={onLogout}
             className="text-gray-400 text-semibold hover:text-red-400  transition"
           >
-            Logout
+            <MdLogout size={20} />
           </button>
         </div>
         <div className="px-3 py-2">
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg"
         style={{ backgroundColor: 'var(--input-bg)' }}>
-        <span className="text-gray-400 text-sm">🔍</span>
+        <CiSearch className="text-gray-400 " />
         <input
             type="text"
-            placeholder="Search rooms..."
+            placeholder="Search DMs and Rooms"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="bg-transparent text-white text-sm outline-none w-full placeholder-gray-400"
@@ -146,7 +148,48 @@ export default function Sidebar({
         </div>
         </div>
         <div className="flex-1 overflow-y-auto">
-          <div className="px-4 py-2">
+
+
+          {dms.length > 0 && (
+            <>
+              <div className="px-4 py-2">
+                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
+                  Inbox
+                </p>
+              </div>
+              {dms
+                .filter(dm =>
+                    (dm.profile?.username || '').toLowerCase().includes(search.toLowerCase()) ||
+                    (dm.profile?.email || '').toLowerCase().includes(search.toLowerCase())
+                )
+                .map((dm, i) => (
+                <div
+                  key={i}
+                  onClick={() => {
+                    router.push(`/dm/${encodeURIComponent(dm.profile?.email || dm.partnerId)}`)
+                    onClose?.()
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 cursor-pointer border-b border-gray-800 hover:bg-gray-800 transition"
+                >
+                  <div
+                    className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
+                    style={{ backgroundColor: '#168aad' }}
+                  >
+                    {getInitials(dm.profile?.username || dm.profile?.email)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-medium text-sm truncate">
+                      {dm.profile?.username || dm.profile?.email?.split('@')[0] || 'Unknown'}
+                    </p>
+                    <p className="text-gray-400 text-xs truncate mt-0.5">
+                      {dm.lastMessage}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+                    <div className="px-4 py-2">
             <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
               Rooms
             </p>
@@ -194,46 +237,6 @@ export default function Sidebar({
                 </div>
               </div>
             ))
-          )}
-
-          {dms.length > 0 && (
-            <>
-              <div className="px-4 py-2 mt-2">
-                <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                  Direct Messages
-                </p>
-              </div>
-              {dms
-                .filter(dm =>
-                    (dm.profile?.username || '').toLowerCase().includes(search.toLowerCase()) ||
-                    (dm.profile?.email || '').toLowerCase().includes(search.toLowerCase())
-                )
-                .map((dm, i) => (
-                <div
-                  key={i}
-                  onClick={() => {
-                    router.push(`/dm/${encodeURIComponent(dm.profile?.email || dm.partnerId)}`)
-                    onClose?.()
-                  }}
-                  className="flex items-center gap-3 px-4 py-3 cursor-pointer border-b border-gray-800 hover:bg-gray-800 transition"
-                >
-                  <div
-                    className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
-                    style={{ backgroundColor: '#168aad' }}
-                  >
-                    {getInitials(dm.profile?.username || dm.profile?.email)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium text-sm truncate">
-                      {dm.profile?.username || dm.profile?.email?.split('@')[0] || 'Unknown'}
-                    </p>
-                    <p className="text-gray-400 text-xs truncate mt-0.5">
-                      {dm.lastMessage}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </>
           )}
         </div>
 

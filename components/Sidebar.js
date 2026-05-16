@@ -16,6 +16,7 @@ export default function Sidebar({
   const router = useRouter()
   const [dms, setDms] = useState([])
   const [username, setUsername] = useState('')
+  const [search, setSearch] = useState('')
 
   const getInitials = (str) => {
     if (!str) return '?'
@@ -122,13 +123,17 @@ export default function Sidebar({
           </button>
         </div>
         <div className="px-3 py-2">
-          <div
-            className="flex items-center gap-2 px-3 py-2 rounded-lg"
-            style={{ backgroundColor: 'var(--input-bg)' }}
-          >
-            <span className="text-gray-400 text-sm">🔍</span>
-            <span className="text-gray-400 text-sm">Search or start new chat</span>
-          </div>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg"
+        style={{ backgroundColor: 'var(--input-bg)' }}>
+        <span className="text-gray-400 text-sm">🔍</span>
+        <input
+            type="text"
+            placeholder="Search rooms..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-transparent text-white text-sm outline-none w-full placeholder-gray-400"
+        />
+        </div>
         </div>
         <div className="flex-1 overflow-y-auto">
           <div className="px-4 py-2">
@@ -140,7 +145,12 @@ export default function Sidebar({
           {rooms.length === 0 ? (
             <p className="text-gray-500 text-xs text-center py-2">No rooms yet</p>
           ) : (
-            rooms.map((room) => (
+            rooms
+            .filter(room =>
+                room.name.toLowerCase().includes(search.toLowerCase()) ||
+                (room.description || '').toLowerCase().includes(search.toLowerCase())
+            )
+            .map((room) => (
               <div
                 key={room.id}
                 onClick={() => {
@@ -183,7 +193,12 @@ export default function Sidebar({
                   Direct Messages
                 </p>
               </div>
-              {dms.map((dm, i) => (
+              {dms
+                .filter(dm =>
+                    (dm.profile?.username || '').toLowerCase().includes(search.toLowerCase()) ||
+                    (dm.profile?.email || '').toLowerCase().includes(search.toLowerCase())
+                )
+                .map((dm, i) => (
                 <div
                   key={i}
                   onClick={() => {

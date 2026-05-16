@@ -26,13 +26,18 @@ export default function Sidebar({
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user?.id) return
-      const { data } = await supabase
+        if (!user?.id) return
+    try {
+        const { data } = await supabase
         .from('profiles')
         .select('username')
         .eq('id', user.id)
         .single()
-      if (data?.username) setUsername(data.username)
+
+        if (data?.username) setUsername(data.username)
+    } catch (err) {
+        console.error('Profile fetch error:', err)
+    }
     }
     fetchProfile()
   }, [user])

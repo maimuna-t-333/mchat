@@ -95,7 +95,7 @@ export default function MessageInput({ onSend, disabled, roomId, userId }) {
           onClick={handleSend}
           disabled={disabled || !message.trim()}
           className="w-10 h-10 rounded-full flex items-center justify-center transition flex-shrink-0 disabled:opacity-50"
-          style={{ backgroundColor: 'var(--whatsapp-green)' }}
+          style={{ backgroundColor: '#184e77' }}
         >
           <span className="text-white text-lg">➤</span>
         </button>

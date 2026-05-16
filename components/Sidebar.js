@@ -129,7 +129,7 @@ export default function Sidebar({
           </div>
           <button
             onClick={onLogout}
-            className="text-gray-400 text-semibold hover:text-red-400  transition"
+            className="text-gray-400 text-semibold hover:text-red-400 hover:cursor-pointer  transition"
           >
             <MdLogout size={20} />
           </button>
@@ -241,19 +241,19 @@ export default function Sidebar({
         </div>
 
         <div
-          className="p-3 border-t border-gray-700 flex flex-col gap-2"
+          className="p-3 border-t border-gray-700 flex flex-col gap-2 "
           style={{ backgroundColor: 'var(--message-bg)' }}
         >
           <Button
             onClick={onCreateRoom}
-            className="w-full text-white font-medium"
+            className="w-full text-white font-medium hover:cursor-pointer"
             style={{ backgroundColor: '#184e77' }}
           >
             New Room
           </Button>
           <Button
             onClick={() => router.push('/new-dm')}
-            className="w-full text-white font-medium"
+            className="w-full text-white font-medium hover:cursor-pointer"
             style={{ backgroundColor: '#168aad' }}
           >
             New Message

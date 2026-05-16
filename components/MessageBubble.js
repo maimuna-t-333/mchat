@@ -21,8 +21,8 @@ export default function MessageBubble({ message, isOwn }) {
 
       {!isOwn && (
         <div
-          className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold"
-          style={{ backgroundColor: 'var(--whatsapp-dark-green)' }}
+          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold"
+          style={{ backgroundColor: '#184e77' }}
         >
           {getInitials(message.user_email)}
         </div>
@@ -31,7 +31,7 @@ export default function MessageBubble({ message, isOwn }) {
       <div className={`max-w-[65%] flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
 
         {!isOwn && (
-          <span className="text-xs mb-1 ml-2" style={{ color: 'var(--whatsapp-green)' }}>
+          <span className="text-xs mb-1 ml-2" style={{ color: '#168aad' }}>
             {getSenderName(message.user_email)}
           </span>
         )}
@@ -39,7 +39,7 @@ export default function MessageBubble({ message, isOwn }) {
         <div
           className="px-3 py-2 rounded-lg relative"
           style={{
-            backgroundColor: isOwn ? 'var(--own-message)' : 'var(--message-bg)',
+            backgroundColor: isOwn ? '#1e6091' : 'var(--message-bg)',
             borderRadius: isOwn
               ? '12px 12px 2px 12px'
               : '12px 12px 12px 2px'
@@ -53,11 +53,6 @@ export default function MessageBubble({ message, isOwn }) {
             <span className="text-xs" style={{ color: '#8696a0' }}>
               {formatTime(message.created_at)}
             </span>
-            {isOwn && (
-              <span style={{ color: 'var(--whatsapp-green)', fontSize: '12px' }}>
-                ✓✓
-              </span>
-            )}
           </div>
         </div>
       </div>

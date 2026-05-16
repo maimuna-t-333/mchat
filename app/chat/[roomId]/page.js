@@ -141,7 +141,8 @@ channel = supabase
 
   return (
     <div className="flex h-screen overflow-hidden"
-      style={{ backgroundColor: 'var(--chat-bg)' }}>
+      style={{ backgroundColor: 'var(--chat-bg)' }}
+      >
 
       <Sidebar
         rooms={rooms}
@@ -166,14 +167,14 @@ channel = supabase
             </button>
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-              style={{ backgroundColor: 'var(--whatsapp-dark-green)' }}
+              style={{ backgroundColor: '#184e77' }}
             >
               {room?.name?.substring(0, 2).toUpperCase()}
             </div>
 
             <div>
               <h1 className="text-white font-semibold text-sm">
-                # {room?.name}
+                 {room?.name}
               </h1>
               <OnlineStatus roomId={roomId} userId={user?.id} />
             </div>
@@ -184,7 +185,6 @@ channel = supabase
           className="flex-1 overflow-y-auto px-4 py-4"
           style={{
             backgroundColor: 'var(--chat-bg)',
-            backgroundImage: 'radial-gradient(circle at 1px 1px, #1a2535 1px, transparent 0)',
             backgroundSize: '20px 20px'
           }}
         >
@@ -194,12 +194,9 @@ channel = supabase
                 className="text-center px-6 py-4 rounded-lg"
                 style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
               >
-                <p className="text-3xl mb-2">🔒</p>
-                <p className="text-gray-300 text-sm">
-                  Messages are end-to-end vibes only
-                </p>
-                <p className="text-gray-500 text-xs mt-1">
-                  Say hello!
+                <p className="text-3xl mb-2"></p>
+                <p className="text-gray-500 mt-1">
+                  Say Hello!
                 </p>
               </div>
             </div>

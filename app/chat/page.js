@@ -12,7 +12,7 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  const [username, setUsername] = useState('')
   useEffect(() => {
     const initialize = async () => {
       const { data: { session } } = await supabase.auth.getSession()
@@ -21,6 +21,15 @@ export default function ChatPage() {
         return
       }
       setUser(session.user)
+
+      const { data: profile } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', session.user.id)
+      .single()
+
+    if (profile?.username) setUsername(profile.username)
+
       await fetchRooms()
       setLoading(false)
     }
@@ -74,10 +83,10 @@ export default function ChatPage() {
 <div className="flex-1 flex flex-col items-center justify-center px-6">
   <div className="text-center max-w-sm">
 
-    {/* Animated icon */}
     <div
       className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6"
-      style={{ backgroundColor: 'rgba(37,211,102,0.1)', border: '2px solid rgba(37,211,102,0.2)' }}
+      style={{ backgroundColor: 'rgba(37,211,102,0.1)', 
+        border: '2px solid rgba(37,211,102,0.2)' }}
     >
       <span className="text-5xl">💬</span>
     </div>
@@ -86,14 +95,13 @@ export default function ChatPage() {
       className="text-white text-2xl font-bold mb-2"
       style={{ letterSpacing: '-0.5px' }}
     >
-      Welcome, {user?.email?.split('@')[0]}!
+      Welcome, {username || user?.email?.split('@')[0]}!
     </h2>
     <p className="text-gray-500 text-sm mb-8 leading-relaxed">
       Join a room to chat with everyone, or send a
       private message to someone directly.
     </p>
 
-    {/* Stats row */}
     <div className="flex gap-4 justify-center mb-8">
       <div
         className="px-4 py-3 rounded-xl text-center"
@@ -114,7 +122,6 @@ export default function ChatPage() {
       </div>
     </div>
 
-    {/* Action buttons */}
     <div className="flex flex-col gap-3">
       <button
         onClick={() => setShowModal(true)}
@@ -131,10 +138,6 @@ export default function ChatPage() {
          Send a Direct Message
       </button>
     </div>
-
-    <p className="text-gray-600 text-xs mt-6">
-      Select any room from the sidebar to start chatting
-    </p>
   </div>
 </div>
 

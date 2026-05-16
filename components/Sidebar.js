@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
 export default function Sidebar({
   rooms,
@@ -96,11 +97,15 @@ export default function Sidebar({
           style={{ backgroundColor: 'var(--message-bg)' }}
         >
           <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-              style={{ backgroundColor: 'var(--whatsapp-teal)' }}
-            >
-              {getInitials(username || user?.email)}
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-gray-600">
+            <Image
+                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                alt="avatar"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+                priority
+            />
             </div>
             <div>
               <p className="text-white text-sm font-semibold">
@@ -117,7 +122,7 @@ export default function Sidebar({
           </div>
           <button
             onClick={onLogout}
-            className="text-gray-400 hover:text-red-400 text-xs transition"
+            className="text-gray-400 text-semibold hover:text-red-400  transition"
           >
             Logout
           </button>
@@ -164,17 +169,17 @@ export default function Sidebar({
                 `}
               >
                 <div
-                  className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                  style={{ backgroundColor: 'var(--whatsapp-dark-green)' }}
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
+                  style={{ backgroundColor: '#184e77' }}
                 >
                   {getInitials(room.name)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <p className="text-white font-medium text-sm truncate">
-                      # {room.name}
+                       {room.name}
                     </p>
-                    <span className="text-gray-500 text-xs flex-shrink-0 ml-2">
+                    <span className="text-gray-500 text-xs shrink-0 ml-2">
                       {new Date(room.created_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -208,7 +213,7 @@ export default function Sidebar({
                   className="flex items-center gap-3 px-4 py-3 cursor-pointer border-b border-gray-800 hover:bg-gray-800 transition"
                 >
                   <div
-                    className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                    className="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
                     style={{ backgroundColor: '#168aad' }}
                   >
                     {getInitials(dm.profile?.username || dm.profile?.email)}
@@ -234,16 +239,16 @@ export default function Sidebar({
           <Button
             onClick={onCreateRoom}
             className="w-full text-white font-medium"
-            style={{ backgroundColor: 'var(--whatsapp-green)' }}
+            style={{ backgroundColor: '#184e77' }}
           >
-            + New Room
+            New Room
           </Button>
           <Button
             onClick={() => router.push('/new-dm')}
             className="w-full text-white font-medium"
             style={{ backgroundColor: '#168aad' }}
           >
-            ✉ New Message
+            New Message
           </Button>
         </div>
       </div>
